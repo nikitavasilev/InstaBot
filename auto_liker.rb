@@ -31,29 +31,30 @@ if browser.div(:class => ['pbNvD', 'fPMEg']).exists?
   browser.button(:class => ['aOOlW', 'HoLwm']).click
 end
 
-puts "Before while loop"
-while true
+
+
+# Continuous loop to break upon reaching the max likes
+loop do
+  # Scroll to bottom of window 3 times to load more results (20 per page)
   3.times do |i|
-    browser.driver.execute_script("window.scrollBy(0, document.body.scrollHeight)")
+    browser.driver.execute_script("window.scrollBy(0,document.body.scrollHeight)")
     sleep(1)
   end
-  puts "3 times scrolling done."
-  puts "Before liking."
-  if browser.span(:class => "fr66n").exists?
-    browser.spans(:class => "fr66n").each { |val|
+
+  # Call all unliked like buttons on page and click each one.
+  if browser.span(:class => 'glyphsSpriteHeart__outline__24__grey_9', aria_label: "Like").exists?
+    browser.spans(:class => 'glyphsSpriteHeart__outline__24__grey_9', aria_label: "Like").each { |val|
       val.click
       like_counter += 1
-      puts "liking"
     }
-    puts "Finished liking"
     ap "Photos liked: #{like_counter}"
   else
-    ap "No media to like right now. Sorry, we tried."
+    ap "No media to like rn, yo. Sorry homie, we tried."
   end
   num_of_rounds += 1
-  puts "========== #{like_counter / num_of_rounds} like per round (on average) =========="
+  puts "--------- #{like_counter / num_of_rounds} likes per round (on average) ----------"
   break if like_counter >= MAX_LIKES
-  sleep(30)
+  sleep(30) # Return to top of loop after this many seconds to check for new photos
 end
 
 Pry.start(binding)
